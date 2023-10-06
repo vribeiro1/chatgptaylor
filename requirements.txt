@@ -1,4 +1,6 @@
 beautifulsoup4
 funcy
+nltk
+pytest
 requests
 tqdm
