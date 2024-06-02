@@ -1,6 +1,10 @@
-beautifulsoup4
-funcy
-nltk
-pytest
-requests
-tqdm
+beautifulsoup4==4.12.3
+funcy==2.0
+mlflow==2.13.1
+numpy==1.26.4
+pydantic==2.7.2
+pytest==8.2.1
+requests==2.32.3
+tqdm==4.66.4
+torch==2.3.0
+transformers==4.41.2
