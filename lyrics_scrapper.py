@@ -6,7 +6,6 @@ import bs4
 
 from tqdm import tqdm
 
-END_OF_STROPHE = "\nEND_OF_STROPHE\n"
 LETRAS_URL = "https://www.letras.mus.br/{artist}"
 
 def main(
@@ -57,7 +56,7 @@ def main(
 
             strophe_lyrics.append("\n".join(verses))
 
-        lyrics = (END_OF_STROPHE).join(strophe_lyrics)
+        lyrics = "\n\n".join(strophe_lyrics)
 
         with open(os.path.join(save_to, f"{track_name}.txt"), "w") as f:
             f.write(lyrics)
