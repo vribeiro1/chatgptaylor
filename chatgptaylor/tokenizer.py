@@ -6,6 +6,9 @@ from tqdm import tqdm
 from typing import List, Tuple
 
 import regex as re
+import torch
+
+from chatgptaylor import TOKENIZER_VOCABULARY_FILEPATH, TOKENIZER_MERGES_FILEPATH
 
 BYTES_PUNCTUATION = {c.encode("utf-8") for c in string.punctuation}
 
@@ -19,7 +22,7 @@ class Tokenizer:
         self.vocabulary = {i: bytes([i]) for i in range(256)}
         self.merges = {}
 
-    def dump(self, vocabulary_filepath, merges_filepath):
+    def dump(self, vocabulary_filepath: str, merges_filepath: str):
         with open(vocabulary_filepath, "wb") as f:
             pickle.dump(self.vocabulary, f)
 
@@ -30,7 +33,10 @@ class Tokenizer:
         return len(self.vocabulary)
 
     @classmethod
-    def load(cls, vocabulary_filepath, merges_filepath):
+    def load(cls, vocabulary_filepath: str = None, merges_filepath: str = None):
+        vocabulary_filepath = vocabulary_filepath or TOKENIZER_VOCABULARY_FILEPATH
+        merges_filepath = merges_filepath or TOKENIZER_MERGES_FILEPATH
+
         tokenizer = cls()
 
         with open(vocabulary_filepath, "rb") as f:
@@ -156,8 +162,10 @@ class Tokenizer:
             parts_text_bytes.append(part_bytes)
 
         text_bytes = functools.reduce(lambda l1, l2 : l1 + l2, parts_text_bytes, [])
-        return text_bytes
+        return torch.tensor(text_bytes, dtype=torch.int32)
 
     def decode(self, ids):
+        if isinstance(ids, torch.Tensor):
+            ids = [id_.item() for id_ in ids]
         text_bytes = b"".join(self.vocabulary[token_id] for token_id in ids)
         return text_bytes.decode("utf-8", errors="replace")
